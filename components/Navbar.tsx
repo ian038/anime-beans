@@ -42,14 +42,9 @@ const Navbar: React.FC<{}> = () => {
 
     let right = (
         <div className="hidden md:flex items-center space-x-3">
-            <Link href='/login'>
-                <a className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-300 hover:text-white transition duration-300">
-                    Log In
-                </a>
-            </Link>
-            <Link href='/signup'>
-                <a className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-300 transition duration-300">
-                    Sign Up
+            <Link href='/auth'>
+                <a className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">
+                    Log In/Sign Up
                 </a>
             </Link>
         </div>
@@ -87,10 +82,13 @@ const Navbar: React.FC<{}> = () => {
     }
 
     return (
-        <nav className="bg-white shadow-lg">
-            <div className="max-w-6xl mx-auto px-4">
+        <nav className="bg-white shadow-lg border-b-4 border-green-500">
+            <div className="max-w-8xl mx-auto">
                 <div className="flex justify-between">
-                    <div className="flex space-x-7">
+                    <div className="flex space-x-8">
+                        <div className="flex items-center py-4 px-2">
+                            <span className="font-semibold text-gray-500 text-lg">AnimeBeans</span>
+                        </div>
                         {left}
                     </div>
                     {right}

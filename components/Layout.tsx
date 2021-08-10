@@ -6,10 +6,10 @@ type Props = {
 }
 
 const Layout: React.FC<Props> = props => (
-    <div>
+    <>
         <Navbar />
-        <div>{props.children}</div>
-    </div>
+        <div className="flex items-center py-4 px-2">{props.children}</div>
+    </>
 )
 
 export default Layout
