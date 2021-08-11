@@ -1,34 +1,26 @@
 import React, { useState } from 'react'
 import { useFormFields } from '../utils'
-import { supabase } from '../api'
+import { useAuth } from '../auth/AuthContext'
 
-type SignUpFieldProps = {
+type AuthFieldProps = {
     email: string,
     password: string
 }
 
-type SupabaseAuthPayload = SignUpFieldProps
-
-const FORM_VALUES: SignUpFieldProps = {
+const FORM_VALUES: AuthFieldProps = {
     email: '',
     password: ''
 }
 
-type MessageType = 'success' | 'error' | 'default'
-
-type AlertMessage = {
-    message: string,
-    type: MessageType
-}
-
 const Signup = () => {
-    const [loading, setLoading] = useState(false)
-    const [values, handleChange] = useFormFields<SignUpFieldProps>(FORM_VALUES)
-    const [alert, setAlert] = useState<AlertMessage>({
-        message: '',
-        type: 'default'
-    })
+    const { loading, signUp, signIn, alert, setAlert } = useAuth()
+    const [values, handleChange] = useFormFields<AuthFieldProps>(FORM_VALUES)
     const [isSignIn, setIsSignIn] = useState(false)
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        isSignIn ? signIn(values) : signUp(values)
+    }
 
     const showAlert = (message, type) => {
         return alert && (
@@ -41,40 +33,6 @@ const Signup = () => {
                 </span>
             </div>
         )
-    }
-
-    const signUp = async (payload: SupabaseAuthPayload) => {
-        try {
-            setLoading(true)
-            const { error } = await supabase.auth.signUp(payload)
-            if(error) {
-                setAlert({ message: error.message, type: 'error' })
-            } else {
-                setAlert({ message: `Signup successful. Please check your inbox for a confirmation email!`, type: 'success' })
-            } 
-        } catch(error) {
-            setAlert({ message: error.error_description || error, type: 'error' })
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const signIn = async (payload: SupabaseAuthPayload) => {
-        try {
-            const { error } = await supabase.auth.signIn(payload)
-            if(error) {
-                setAlert({ message: error.message, type: 'error' })
-            } else {
-                setAlert({ message: `Log in successful. Redirecting now`, type: 'success' })
-            } 
-        } catch(error) {
-            setAlert({ message: error.error_description || error, type: 'error' })
-        }
-    }
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        isSignIn ? signIn(values) : signUp(values)
     }
 
     return (
