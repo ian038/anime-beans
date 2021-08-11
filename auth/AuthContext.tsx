@@ -1,7 +1,8 @@
 import React, { createContext, useContext,useState, useEffect } from "react"
-import { supabase } from '../api'
-import { User } from '@supabase/supabase-js'
+import { supabase } from '../supabase'
+import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { useRouter } from 'next/router'
+import axios from 'axios'
 
 type SupabaseAuthPayload = {
     email: string,
@@ -67,6 +68,14 @@ function useProvideAuth() {
 
     const signOut = async() => await supabase.auth.signOut()
 
+    const setServerSession = async(event: AuthChangeEvent, session: Session) => {
+        await axios({
+            method: 'POST',
+            url: '/api/auth',
+            data: { event, session }
+        })
+    }
+
     // when page is done loading, set user object(if found)
     useEffect(() => {
         const user = supabase.auth.user()
@@ -83,6 +92,7 @@ function useProvideAuth() {
             async(event, session) => {
                 const user = session?.user! ?? null
                 setLoading(false)
+                await setServerSession(event, session) 
                 if(user) {
                     setUser(user)
                     setLoggedIn(true)
