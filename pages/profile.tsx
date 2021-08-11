@@ -1,20 +1,64 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Layout from '../components/Layout'
 import { useAuth } from '../auth/AuthContext'
 import Spinner from '../components/Spinner'
+import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
+import { User } from '@supabase/supabase-js'
+import { supabase } from '../supabase'
+
+type NextAppPageUserProps = { 
+    props: {
+        user: User, 
+        loggedIn: boolean
+    }
+}
+
+type NextAppPageRedirProps = { 
+    redirect: {
+        destination: string,
+        permanent: boolean
+    }
+}
+
+
+type NextAppPageServerSideProps = NextAppPageUserProps | NextAppPageRedirProps
+
+export const getServerSideProps: GetServerSideProps = async({ req }): Promise<NextAppPageServerSideProps> => {
+    const { user } = await supabase.auth.api.getUserByCookie(req)
+    // if(!user) {
+    //     return {
+    //         redirect: {
+    //             destination: '/',
+    //             permanent: false
+    //         }
+    //     }
+    // }
+    return {
+        props: {
+            user,
+            loggedIn: !!user
+        }
+    }
+}
 
 const Profile = ({}) => {
-    const { user, loading } = useAuth()
+    const { user, loading, loggedIn } = useAuth()
+    const router = useRouter()
+
+    useEffect(() => {
+        if(!loading && !loggedIn) router.push('/auth')
+    }, [loading, loggedIn])
 
     if(loading) {
-        return loading && (
+        return (
             (<Spinner />)
         )
     }
 
     return (
         <Layout>
-            <h1>{user && user.email ? `Welcome back, ${user.email}!` : 'Hello, explorer! This is a protected page. Please login/register.'}</h1>
+            <h1>{user && user.email && `Welcome back, ${user.email}!`}</h1>
         </Layout>
     )
 }
