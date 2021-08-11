@@ -1,28 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { supabase } from '../api'
 import { useRouter } from "next/router"
+import { useAuth } from '../auth/AuthContext'
 
 const Navbar: React.FC<{}> = () => {
+    const { user, signOut } = useAuth()
     const router = useRouter()
-    const [user, setUser] = useState(null)
     const isActive: (pathname: string) => object = pathname => {
         if (router.pathname === pathname) return { color: '#48bb78' }
-    }
-
-    useEffect(() => {
-        const { data: authListener } = supabase.auth.onAuthStateChange(
-            async () => checkUser()
-        )
-        checkUser()
-        return () => {
-            authListener?.unsubscribe()
-        }
-    }, [])
-
-    const checkUser = () => {
-        const user = supabase.auth.user()
-        setUser(user)
     }
 
     let left = (
@@ -72,8 +57,8 @@ const Navbar: React.FC<{}> = () => {
         )
         right = (
             <div className="hidden md:flex items-center space-x-3">
-                <button className='border-none'>
-                    <a className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-300 transition duration-300">
+                <button className='border-none' onClick={signOut}>
+                    <a className="py-2 px-2 font-medium text-white bg-red-500 rounded hover:bg-red-300 transition duration-300">
                         Log Out
                     </a>
                 </button>

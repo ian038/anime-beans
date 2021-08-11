@@ -1,5 +1,7 @@
-import React, { createContext, useContext,useState } from "react"
+import React, { createContext, useContext,useState, useEffect } from "react"
 import { supabase } from '../api'
+import { User } from '@supabase/supabase-js'
+import { useRouter } from 'next/router'
 
 type SupabaseAuthPayload = {
     email: string,
@@ -14,16 +16,22 @@ type AlertMessage = {
 }
 
 interface AuthContextProps {
+    user: User
     signUp: (payload: SupabaseAuthPayload) => void
     signIn: (payload: SupabaseAuthPayload) => void
+    signOut: () => void
     alert: AlertMessage
     setAlert: React.Dispatch<AlertMessage>
     loading: boolean
+    loggedIn: boolean
 }
 
 const authContext = createContext<Partial<AuthContextProps>>({})
 
 function useProvideAuth() {
+    const router = useRouter()
+    const [user, setUser] = useState<User>(null)
+    const [loggedIn, setLoggedIn] = useState(false)
     const [alert, setAlert] = useState<AlertMessage>({
         message: '',
         type: 'default'
@@ -51,20 +59,53 @@ function useProvideAuth() {
             const { error } = await supabase.auth.signIn(payload)
             if(error) {
                 setAlert({ message: error.message, type: 'error' })
-            } else {
-                setAlert({ message: `Log in successful. Redirecting now`, type: 'success' })
-            } 
+            }
         } catch(error) {
             setAlert({ message: error.error_description || error, type: 'error' })
         }
     }
 
+    const signOut = async() => await supabase.auth.signOut()
+
+    // when page is done loading, set user object(if found)
+    useEffect(() => {
+        const user = supabase.auth.user()
+
+        if(user) {
+            setUser(user)
+            setLoading(false)
+            setLoggedIn(true)
+            router.push('/profile')
+        }
+
+        // similarly, whenever there is a change in state, check availability of user object
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+            async(event, session) => {
+                const user = session?.user! ?? null
+                setLoading(false)
+                if(user) {
+                    setUser(user)
+                    setLoggedIn(true)
+                    router.push('/profile')
+                } else {
+                    setUser(null)
+                    router.push('/')
+                }
+            }
+        )
+        
+        return () => { authListener.unsubscribe() }
+    }, [])
+
     return {
+        user,
         loading,
         signUp,
         signIn,
+        signOut,
         alert,
-        setAlert
+        setAlert,
+        loggedIn
     }
 }
 

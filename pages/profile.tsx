@@ -1,31 +1,22 @@
-import { Auth, Typography, Button } from '@supabase/ui'
-const { Text } = Typography
-import { supabase } from '../api'
 import React from 'react'
+import Layout from '../components/Layout'
+import { useAuth } from '../auth/AuthContext'
+import Spinner from '../components/Spinner'
 
-const Profile = (props) => {
-    const { user } = Auth.useUser()
-    if (user) {
-        return (
-            <>
-                <Text>Signed In: {user.email}</Text>
-                <Button block onClick={() => props.supabaseClient.auth.signOut()}>
-                    Sign Out
-                </Button>
-            </>
+const Profile = ({}) => {
+    const { user, loading } = useAuth()
+
+    if(loading) {
+        return loading && (
+            (<Spinner />)
         )
     }
-    return props.children
-}
 
-const AuthProfile: React.FC = () => {
     return (
-        <Auth.UserContextProvider supabaseClient={supabase}>
-            <Profile supabaseClient={supabase}>
-                <Auth supabaseClient={supabase} />
-            </Profile>
-        </Auth.UserContextProvider>
+        <Layout>
+            <h1>{user && user.email ? `Welcome back, ${user.email}!` : 'Hello, explorer! This is a protected page. Please login/register.'}</h1>
+        </Layout>
     )
 }
 
-export default AuthProfile
+export default Profile
