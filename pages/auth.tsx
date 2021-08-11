@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useFormFields } from '../utils'
 import { useAuth } from '../auth/AuthContext'
+import Spinner from '../components/Spinner'
 
 type AuthFieldProps = {
     email: string,
@@ -35,10 +36,14 @@ const Signup = () => {
         )
     }
 
+    const showSpinner = loading => {
+        return loading && (<Spinner />)
+    }
+
     return (
         <div className="bg-grey-lighter min-h-screen flex flex-col">
             <div className="container max-w-sm mx-auto flex flex-col items-center justify-center">
-                <h1 className="h-12 w-12 relative">{loading && 'Loading...'}</h1>
+                {showSpinner(loading)}
                 {showAlert(alert.message, alert.type)}
                 <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
                     <h1 className="mb-8 text-3xl text-center">{isSignIn ? 'Log In' : 'Sign Up'}</h1>
