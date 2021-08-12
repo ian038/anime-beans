@@ -96,7 +96,6 @@ function useProvideAuth() {
             setUser(user)
             setLoading(false)
             setLoggedIn(true)
-            router.push('/profile')
         }
 
         // similarly, whenever there is a change in state, check availability of user object

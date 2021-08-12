@@ -26,14 +26,6 @@ type NextAppPageServerSideProps = NextAppPageUserProps | NextAppPageRedirProps
 
 export const getServerSideProps: GetServerSideProps = async({ req }): Promise<NextAppPageServerSideProps> => {
     const { user } = await supabase.auth.api.getUserByCookie(req)
-    // if(!user) {
-    //     return {
-    //         redirect: {
-    //             destination: '/',
-    //             permanent: false
-    //         }
-    //     }
-    // }
     return {
         props: {
             user,
@@ -44,6 +36,7 @@ export const getServerSideProps: GetServerSideProps = async({ req }): Promise<Ne
 
 const Profile = ({}) => {
     const { user, loading, loggedIn } = useAuth()
+
     const router = useRouter()
 
     useEffect(() => {
