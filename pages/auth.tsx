@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useFormFields } from '../utils'
 import { useAuth } from '../auth/AuthContext'
+import { FaGithub, FaGoogle } from 'react-icons/fa'
 import Spinner from '../components/Spinner'
 
 type AuthFieldProps = {
@@ -14,7 +15,7 @@ const FORM_VALUES: AuthFieldProps = {
 }
 
 const Signup = () => {
-    const { loading, signUp, signIn, alert, setAlert } = useAuth()
+    const { loading, signUp, signIn, signInWithGithub, signInWithGoogle, alert, setAlert } = useAuth()
     const [values, handleChange] = useFormFields<AuthFieldProps>(FORM_VALUES)
     const [isSignIn, setIsSignIn] = useState(false)
 
@@ -77,7 +78,12 @@ const Signup = () => {
                             <span className="font-normal text-gray-500">or {isSignIn ? 'log in' : 'sign up'} with</span>
                             <span className="h-px bg-gray-400 w-24"></span>
                         </span>
-                        {/* INSERT SOCIAL LINKS HERE: GITHUB & GOOGLE WIP */}
+                        <button onClick={signInWithGithub} className="flex-1 bg-gray-500 text-white py-3 rounded w-full hover:bg-black hover:text-green-200 text-center shadow">
+                            <FaGithub className="inline-block text-2xl"/> {isSignIn ? 'Log In' : 'Sign Up' } with <strong>Github</strong>
+                        </button>
+                        <button onClick={signInWithGoogle} className="flex-1 bg-red-600 text-white py-3 rounded w-full hover:bg-white hover:text-red-600 text-center shadow">
+                            <FaGoogle className="inline-block text-2xl"/> {isSignIn ? 'Log In' : 'Sign Up' } with <strong>Google</strong>
+                        </button>
                     </div>
                 </div>
                 <div className="text-grey-dark mt-6">
