@@ -20,6 +20,8 @@ interface AuthContextProps {
     user: User
     signUp: (payload: SupabaseAuthPayload) => void
     signIn: (payload: SupabaseAuthPayload) => void
+    signInWithGithub: (e: any) => void
+    signInWithGoogle: (e: any) => void
     signOut: () => void
     alert: AlertMessage
     setAlert: React.Dispatch<AlertMessage>
@@ -65,6 +67,16 @@ function useProvideAuth() {
             setAlert({ message: error.error_description || error, type: 'error' })
         }
     }
+
+    const signInWithGithub = async (e) => {
+        e.preventDefault()
+        await supabase.auth.signIn({ provider: 'github' })
+    }
+
+    const signInWithGoogle = async (e) => {
+        e.preventDefault()
+        await supabase.auth.signIn({ provider: 'google' })
+    } 
 
     const signOut = async() => await supabase.auth.signOut()
 
@@ -112,6 +124,8 @@ function useProvideAuth() {
         loading,
         signUp,
         signIn,
+        signInWithGithub,
+        signInWithGoogle,
         signOut,
         alert,
         setAlert,
