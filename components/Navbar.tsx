@@ -17,11 +17,6 @@ const Navbar: React.FC<{}> = () => {
                     <span className="mr-6 cursor-pointer">Home</span>
                 </a>
             </Link>
-            {/* <Link href="/profile">
-                <a style={isActive('/profile')} className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">
-                    <span className="mr-6 cursor-pointer">Profile</span>
-                </a>
-            </Link> */}
         </div>
     )
 
