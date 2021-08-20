@@ -4,16 +4,16 @@ import { GetServerSideProps } from "next"
 import ReactMarkdown from 'react-markdown'
 import { supabase } from '../../supabase'
 import { useAuth } from '../../auth/AuthContext'
-import { PostProps } from '../../types'
+import { PostTypeProps } from '../../types'
 import Spinner from '../../components/Spinner'
 import Layout from '../../components/Layout'
 import axios from 'axios'
 
-const Review: React.FC<PostProps> = ({ data, user }) => {
+const Review: React.FC<PostTypeProps> = ({ data, user }) => {
   const [loading, setLoading] = useState<Boolean>(false)
   const router = useRouter()
   const { loggedIn } = useAuth()
-  const postBelongsToUser = user.email === data.user_email
+  const postBelongsToUser = user?.email === data.user_email
   const publishedDate = new Date(data.inserted_at)
 
   if (router.isFallback) {
@@ -63,7 +63,15 @@ const Review: React.FC<PostProps> = ({ data, user }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req)
-  const { data } = await supabase.from('recaps').select().filter('id', 'eq', params.id).single()
+  const { data } = await supabase.from('posts').select().filter('id', 'eq', params.id).single()
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
   return {
     props: {
       data,

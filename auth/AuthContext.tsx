@@ -1,4 +1,4 @@
-import React, { createContext, useContext,useState, useEffect } from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
 import { supabase } from '../supabase'
 import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { useRouter } from 'next/router'
@@ -45,12 +45,12 @@ function useProvideAuth() {
         try {
             setLoading(true)
             const { error } = await supabase.auth.signUp(payload)
-            if(error) {
+            if (error) {
                 setAlert({ message: error.message, type: 'error' })
             } else {
                 setAlert({ message: `Signup successful. Please check your inbox for a confirmation email!`, type: 'success' })
-            } 
-        } catch(error) {
+            }
+        } catch (error) {
             setAlert({ message: error.error_description || error, type: 'error' })
         } finally {
             setLoading(false)
@@ -60,10 +60,10 @@ function useProvideAuth() {
     const signIn = async (payload: SupabaseAuthPayload) => {
         try {
             const { error } = await supabase.auth.signIn(payload)
-            if(error) {
+            if (error) {
                 setAlert({ message: error.message, type: 'error' })
             }
-        } catch(error) {
+        } catch (error) {
             setAlert({ message: error.error_description || error, type: 'error' })
         }
     }
@@ -76,11 +76,11 @@ function useProvideAuth() {
     const signInWithGoogle = async (e) => {
         e.preventDefault()
         await supabase.auth.signIn({ provider: 'google' })
-    } 
+    }
 
-    const signOut = async() => await supabase.auth.signOut()
+    const signOut = async () => await supabase.auth.signOut()
 
-    const setServerSession = async(event: AuthChangeEvent, session: Session) => {
+    const setServerSession = async (event: AuthChangeEvent, session: Session) => {
         await axios({
             method: 'POST',
             url: '/api/auth',
@@ -92,7 +92,7 @@ function useProvideAuth() {
     useEffect(() => {
         const user = supabase.auth.user()
 
-        if(user) {
+        if (user) {
             setUser(user)
             setLoading(false)
             setLoggedIn(true)
@@ -100,11 +100,11 @@ function useProvideAuth() {
 
         // similarly, whenever there is a change in state, check availability of user object
         const { data: authListener } = supabase.auth.onAuthStateChange(
-            async(event, session) => {
+            async (event, session) => {
                 const user = session?.user! ?? null
                 setLoading(false)
-                await setServerSession(event, session) 
-                if(user) {
+                await setServerSession(event, session)
+                if (user) {
                     setUser(user)
                     setLoggedIn(true)
                     router.push('/profile')
@@ -114,7 +114,7 @@ function useProvideAuth() {
                 }
             }
         )
-        
+
         return () => { authListener.unsubscribe() }
     }, [])
 
