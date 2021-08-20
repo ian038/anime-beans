@@ -1,21 +1,31 @@
-import { User } from '@supabase/supabase-js'
+import { PostgrestError, User } from '@supabase/supabase-js'
 
 export type AuthFieldProps = {
     email: string,
     password: string
 }
 
-export type PostProps = {
+export type PostTypeProps = {
     data: {
         id: number
         title: string
         user_email: string | null
         content: string
+        type: string
         inserted_at: string
-    },
+    }
     user: {
         email: string
     }
+}
+
+export type PostProps = {
+    id: number
+    title: string
+    user_email: string | null
+    content: string
+    type: string
+    inserted_at: string
 }
 
 export type NextAppPageUserProps = {
@@ -30,4 +40,9 @@ export type NextAppPageRedirProps = {
         destination: string,
         permanent: boolean
     }
+}
+
+export type feedProps = {
+    data: PostProps[],
+    error: PostgrestError
 }

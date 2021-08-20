@@ -20,27 +20,27 @@ const CreatePost: React.FC = () => {
     const { type, title, content } = post
     const router = useRouter()
 
-    const handleSubmit = async(e: React.SyntheticEvent) => {
+    const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        if(!title || !content || !type) {
+        if (!title || !content || !type) {
             setAlert({ message: 'All fields are required', type: 'error' })
             return
-        } 
+        }
         try {
             setLoading(true)
             const user = supabase.auth.user()
-            const { data } = await supabase.from(type).insert([
+            const { data } = await supabase.from('posts').insert([
                 { title, content, type, user_id: user.id, user_email: user.email }
             ]).single()
-            if(data.id !== null) {
+            if (data.id !== null) {
                 setLoading(false)
-                if(data.type === "reviews") {
+                if (data.type === "reviews") {
                     router.push(`/reviews/${data.id}`)
-                } else if(data.type === "recaps") {
+                } else if (data.type === "recaps") {
                     router.push(`/recaps/${data.id}`)
                 }
             }
-        } catch(error) {
+        } catch (error) {
             console.log('Submit Error', error)
             setAlert({ message: error, type: 'error' })
         }
@@ -52,7 +52,7 @@ const CreatePost: React.FC = () => {
                 <span className="block sm:inline">{message}</span>
                 <span className="absolute top-0 bottom-0 right-0">
                     <button className="border-none" onClick={() => setAlert({ message: '', type: 'default' })}>
-                        <svg className={type === 'error' ? "fill-current h-6 w-6 text-red-500" : "fill-current h-6 w-6 text-green-500"} role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                        <svg className={type === 'error' ? "fill-current h-6 w-6 text-red-500" : "fill-current h-6 w-6 text-green-500"} role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" /></svg>
                     </button>
                 </span>
             </div>
@@ -77,12 +77,12 @@ const CreatePost: React.FC = () => {
                             placeholder="Title"
                             value={post.title}
                             className="shadow appearance-none rounded pb-2 text-lg my-4 focus:shadow-outline w-full text-gray-500 placeholder-gray-500 y-2"
-                        /> 
-                        <select 
-                        name="type"
-                        value={post.type} 
-                        className="mb-5"
-                        onChange={e => { setPost(() => ({ ...post, [e.target.name]: e.target.value })) }}
+                        />
+                        <select
+                            name="type"
+                            value={post.type}
+                            className="mb-5"
+                            onChange={e => { setPost(() => ({ ...post, [e.target.name]: e.target.value })) }}
                         >
                             <option value="">Post Type</option>
                             <option value="reviews">Review</option>
