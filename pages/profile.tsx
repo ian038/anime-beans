@@ -4,27 +4,12 @@ import { useAuth } from '../auth/AuthContext'
 import Spinner from '../components/Spinner'
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
-import { User } from '@supabase/supabase-js'
 import { supabase } from '../supabase'
-
-type NextAppPageUserProps = { 
-    props: {
-        user: User, 
-        loggedIn: boolean
-    }
-}
-
-type NextAppPageRedirProps = { 
-    redirect: {
-        destination: string,
-        permanent: boolean
-    }
-}
-
+import { NextAppPageUserProps, NextAppPageRedirProps } from '../types'
 
 type NextAppPageServerSideProps = NextAppPageUserProps | NextAppPageRedirProps
 
-export const getServerSideProps: GetServerSideProps = async({ req }): Promise<NextAppPageServerSideProps> => {
+export const getServerSideProps: GetServerSideProps = async ({ req }): Promise<NextAppPageServerSideProps> => {
     const { user } = await supabase.auth.api.getUserByCookie(req)
     return {
         props: {
@@ -34,16 +19,16 @@ export const getServerSideProps: GetServerSideProps = async({ req }): Promise<Ne
     }
 }
 
-const Profile = ({}) => {
+const Profile = ({ }) => {
     const { user, loading, loggedIn } = useAuth()
 
     const router = useRouter()
 
     useEffect(() => {
-        if(!loading && !loggedIn) router.push('/auth')
+        if (!loading && !loggedIn) router.push('/auth')
     }, [loading, loggedIn])
 
-    if(loading) {
+    if (loading) {
         return (
             (<Spinner />)
         )
