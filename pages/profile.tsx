@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
 import { supabase } from '../supabase'
 import { NextAppPageUserProps, NextAppPageRedirProps } from '../types'
+import Link from 'next/link'
 
 type NextAppPageServerSideProps = NextAppPageUserProps | NextAppPageRedirProps
 
@@ -29,7 +30,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }): Promise<N
 
 const Profile = () => {
     const { user, loading, loggedIn } = useAuth()
-
     const router = useRouter()
 
     useEffect(() => {
@@ -45,6 +45,11 @@ const Profile = () => {
     return (
         <Layout>
             <h1>{user && user.email && `Welcome back, ${user.email}!`}</h1>
+            <Link href='/create'>
+                <a className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">
+                    <span className="mr-6 cursor-pointer">Create Post</span>
+                </a>
+            </Link>
         </Layout>
     )
 }

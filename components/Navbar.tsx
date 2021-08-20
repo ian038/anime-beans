@@ -43,9 +43,14 @@ const Navbar: React.FC<{}> = () => {
                         <span className="mr-6 cursor-pointer">Profile</span>
                     </a>
                 </Link>
-                <Link href="/create">
-                    <a style={isActive('/create')} className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">
-                        <span className="mr-6 cursor-pointer">Create Post</span>
+                <Link href="/reviews">
+                    <a style={isActive('/reviews')} className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">
+                        <span className="mr-6 cursor-pointer">Reviews</span>
+                    </a>
+                </Link>
+                <Link href="/recaps">
+                    <a style={isActive('/recaps')} className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">
+                        <span className="mr-6 cursor-pointer">Recaps</span>
                     </a>
                 </Link>
             </div>
